@@ -23,13 +23,23 @@ const Search = () => {
   const renderLists = () => {
     const result = [];
     lists.filter((list) => {
-      if (searchValue === '') {
-        return list
-      } else if (list.name.toLowerCase()
-                 .includes(searchValue.toLowerCase())) {
-        return list
-      }
-    }).map((list, key) => {
+      const value = searchValue.replace(/\s/g, '');
+      switch (value.length) {
+        case 0:
+          return list;
+        case 1:
+          return null;
+        case 2:
+          if (list.name.length === 2 && list.name.toLowerCase() === value.toLowerCase()) {
+            return list;
+          }
+          return null;
+        default:
+          if (list.name.toLowerCase()
+                 .includes(value.toLowerCase())) {
+            return list
+          }
+    }}).map((list, key) => {
       result.push(
         <tr key={key}>
           <td>{list.name}</td>
