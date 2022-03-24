@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import '../css/Search.css';
-import { InputGroup, FormControl, Button, Form } from 'react-bootstrap';
+import { InputGroup, FormControl, Form } from 'react-bootstrap';
 import { BiSearchAlt } from 'react-icons/bi';
 import { allLists } from '../redux/list/list';
 
@@ -18,15 +18,24 @@ const Search = () => {
     }
   }, []);
 
+  const [searchValue, setSearchValue] = useState('');
+
   const renderLists = () => {
     const result = [];
-    for (let i = 0; i < lists.length; i += 1) {
+    lists.filter((list) => {
+      if (searchValue === '') {
+        return list
+      } else if (list.name.toLowerCase()
+                 .includes(searchValue.toLowerCase())) {
+        return list
+      }
+    }).map((list, key) => {
       result.push(
-        <tr key={i}>
-          <td>{lists[i].name}</td>
-        </tr>,
+        <tr key={key}>
+          <td>{list.name}</td>
+        </tr>
       );
-    }
+    });
     return result;
   };
 
@@ -36,15 +45,13 @@ const Search = () => {
         <div className="search">
           <Form>
             <InputGroup className="mb-3">
+              <InputGroup.Text id="basic-addon1">< BiSearchAlt /></InputGroup.Text>
               <FormControl
-                placeholder="name"
-                aria-label="name"
+                placeholder="Search"
+                aria-label="Search"
                 aria-describedby="basic-addon2"
+                onChange={(event) => setSearchValue(event.target.value)}
               />
-              <Button variant="outline-secondary" id="button-addon2">
-                <span className='me-2'><BiSearchAlt /></span>
-                Search
-              </Button>
             </InputGroup>
           </Form>
         </div>
